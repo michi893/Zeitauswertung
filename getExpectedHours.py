@@ -72,7 +72,13 @@ def expected_hours(start_date, end_date, PENSUM):
 
     target_hours = working_days * TARGET_HOURS_PER_DAY * PENSUM / 100
 
-    target_bankHoliday_hours = (
-        len(bankholiday_days) * TARGET_HOURS_PER_DAY * PENSUM / 100
+    # Feiertage gewichten:
+    # Tag der Arbeit = 0.5 Tag
+    # Alle anderen Feiertage = 1.0 Tag
+    bankholiday_factor = sum(
+        0.5 if day.month == 5 and day.day == 1 else 1.0 for day in bankholiday_days
     )
+
+    target_bankHoliday_hours = bankholiday_factor * TARGET_HOURS_PER_DAY * PENSUM / 100
+
     return target_hours, target_bankHoliday_hours
